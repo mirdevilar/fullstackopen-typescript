@@ -1,1 +1,2 @@
-# hy-fs-p9
+## Notes
+- What the hell is structural typing about?
