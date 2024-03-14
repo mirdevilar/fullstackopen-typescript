@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-interface Values {
+export interface BMIParams {
   height: number;
   weight: number;
 }
@@ -21,7 +21,7 @@ const calculateBmi = (height: number, weight: number): string => {
   }
 };
 
-const parseArguments = (args: string[]): Values => {
+const parseArguments = (args: string[]): BMIParams => {
   const relevArgs = args.slice(2).map(a => Number(a));
 
   if (relevArgs.length < 2) throw new Error('Not enough arguments!');
@@ -43,3 +43,5 @@ try {
   }
   console.log(errorMessage);
 }
+
+export default calculateBmi;
