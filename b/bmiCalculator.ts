@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import _ from 'lodash';
 
 interface Values {
   height: number;
@@ -13,38 +13,33 @@ const calculateBmi = (height: number, weight: number): string => {
   const bmi: number = weight / ((height / 100) ** 2);
 
   if (bmi < 18.5) {
-    return 'Underweight'
+    return 'Underweight';
   } else if (bmi < 25) {
-    return 'Normal (healthy weight)'
+    return 'Normal (healthy weight)';
   } else {
-    return 'Overweight'
+    return 'Overweight';
   }
-}
+};
 
 const parseArguments = (args: string[]): Values => {
-  if (args.length < 4) throw new Error('Not enough arguments!')
-  if (args.length > 4) throw new Error('Too many arguments!')
+  const relevArgs = args.slice(2).map(a => Number(a));
 
-  const height = Number(args[2])
-  const weight = Number(args[3])
+  if (relevArgs.length < 2) throw new Error('Not enough arguments!');
+  if (relevArgs.length > 2) throw new Error('Too many arguments!');
+  if (relevArgs.some(a => _.isNaN(a))) throw new Error('Values must be numbers!');
 
-  if (_.isNaN(height) || _.isNaN(weight)) {
-    throw new Error('Values must be numbers!')
-  }
+  const [height, weight] = relevArgs;
   
-  return {
-    height: Number(args[2]),
-    weight: Number(args[3]),
-  }
-}
+  return { height, weight };
+};
 
 try {
-  const { height, weight } = parseArguments(process.argv)
-  console.log(calculateBmi(height, weight))
+  const { height, weight } = parseArguments(process.argv);
+  console.log(calculateBmi(height, weight));
 } catch (error: unknown) {
-  let errorMessage = 'Something went wrong... '
+  let errorMessage = 'Something went wrong... ';
   if (error instanceof Error) {
-    errorMessage += 'Error: ' + error.message
+    errorMessage += 'Error: ' + error.message;
   }
-  console.log(errorMessage)
+  console.log(errorMessage);
 }
