@@ -1,11 +1,14 @@
 import express from 'express';
+import cors from 'cors';
 
 const PORT = process.env.NODE_ENV === 'production'
   ? 3000
-  : 3003;
+  : 3001;
 const baseUrl = '/api/';
 
 const app = express();
+
+app.use(cors());
 
 app.get(baseUrl + 'ping', (_req, res) => {
   console.log('pinged');
