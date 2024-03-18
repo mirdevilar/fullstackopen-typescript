@@ -2,6 +2,12 @@ import { generateId } from './utils';
 
 import { Gender, Patient } from '../types';
 
+const enumIncludesString = (obj: object, str: string): boolean => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-return
+  return Object.values(obj).map(v => v.toString()).includes(str);
+
+};
+
 const isString = (input: unknown): input is string => {
   return typeof input === 'string';
 };
@@ -12,7 +18,7 @@ const isDate = (input: string): boolean => {
 
 const isGender = (input: string): input is Gender => {
   // upgrade to enum
-  return Boolean(input);
+  return enumIncludesString(Gender, input);
 };
 
 const parseId = (input: unknown): string => {
