@@ -1,6 +1,7 @@
 ## Relevant resources
 ### Docs:
 - [Utility Types](https://www.typescriptlang.org/docs/handbook/utility-types.html)
+- [Narrowing](https://www.typescriptlang.org/docs/handbook/2/narrowing.html)
 ### Other:
 - [DefinitelyTyped - Type definitions directory](https://definitelytyped.github.io/)
 

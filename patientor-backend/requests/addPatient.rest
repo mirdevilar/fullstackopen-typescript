@@ -1,0 +1,10 @@
+POST http://localhost:3001/api/patients
+content-type: application/json
+
+{
+  "name": "Leo Tolstoy",
+  "dateOfBirth": "1986-07-09",
+  "ssn": "090786-122X",
+  "gender": "male",
+  "occupation": "Writer"
+}

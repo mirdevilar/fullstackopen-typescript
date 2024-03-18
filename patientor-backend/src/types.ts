@@ -1,6 +1,4 @@
-type Date = `${number}-${number}-${number}`;
-type Gender = 'female' | 'male' | 'other';
-type SSN = `${number}-${number}${string}`;
+export type Gender = 'female' | 'male' | 'other';
 
 export interface Diagnosis {
   code: string;
@@ -11,11 +9,10 @@ export interface Diagnosis {
 export interface Patient {
   id: string;
   name: string;
-  dateOfBirth: Date;
-  ssn: SSN;
+  dateOfBirth: string;
+  ssn: string;
   gender: Gender;
   occupation: string;
 }
 
-export type NonSensitiveDiagnosis = Omit<Patient, 'ssn'>;
-
+export type NonSensitivePatient = Omit<Patient, 'ssn'>;
