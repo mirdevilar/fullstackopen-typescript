@@ -1,6 +1,4 @@
-import { generateId } from './utils';
-
-import { Gender, Patient } from '../types';
+import { Gender, NewPatient } from '../types';
 
 const enumIncludesString = (obj: object, str: string): boolean => {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-return
@@ -21,13 +19,13 @@ const isGender = (input: string): input is Gender => {
   return enumIncludesString(Gender, input);
 };
 
-const parseId = (input: unknown): string => {
-  if (!input || !isString(input)) {
-    throw new Error('Invalid or missing id!');
-  }
-
-  return input;
-};
+// const parseId = (input: unknown): string => {
+//   if (!input || !isString(input)) {
+//     throw new Error('Invalid or missing id!');
+//   }
+//
+//   return input;
+// };
 
 const parseName = (input: unknown): string => {
   if (!input || !isString(input)) {
@@ -69,7 +67,7 @@ const parseOccupation = (input: unknown): string => {
   return input;
 };
 
-export const parsePatient = (input: unknown): Patient => {
+export const parseNewPatient = (input: unknown): NewPatient => {
   if (!input || typeof input !== 'object') {
     throw new Error('Input missing or not an object!');
   }
@@ -82,15 +80,14 @@ export const parsePatient = (input: unknown): Patient => {
     'gender' in input &&
     'occupation' in input
   ) {
-    const patient: Patient = {
-      id: 'id' in input ? parseId(input.id) : generateId(),
+    const newPatient: NewPatient = {
       name: parseName(input.name),
       dateOfBirth: parseDoB(input.dateOfBirth),
       ssn: parseSSN(input.ssn),
       gender: parseGender(input.gender),
       occupation: parseOccupation(input.occupation),
     };
-    return patient;
+    return newPatient;
   }
 
   throw new Error('Invalid input, some properties are missing!');
