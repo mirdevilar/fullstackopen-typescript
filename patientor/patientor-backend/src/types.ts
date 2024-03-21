@@ -10,14 +10,13 @@ export interface Diagnosis {
   latin?: string;
 }
 
-// eslint-disable-next-line 
-// interface Entry {
-//
-// }
+export interface Entry {
+
+}
 
 export interface Patient {
   dateOfBirth: string;
-  // entries: Entry[];
+  entries: Entry[];
   gender: Gender;
   id: string;
   name: string;
@@ -27,4 +26,4 @@ export interface Patient {
 
 export type NewPatient = Omit<Patient, 'id'>;
 
-export type NonSensitivePatient = Omit<Patient, 'ssn'>;
+export type NonSensitivePatient = Omit<Patient, 'ssn' | 'entries'>;

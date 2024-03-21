@@ -1,4 +1,4 @@
-import { Gender, NewPatient } from '../types';
+import { Entry, Gender, NewPatient, NonSensitivePatient, Patient } from '../types';
 
 const enumIncludesString = (obj: object, str: string): boolean => {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-return
@@ -6,34 +6,26 @@ const enumIncludesString = (obj: object, str: string): boolean => {
 
 };
 
-const isString = (input: unknown): input is string => {
-  return typeof input === 'string';
-};
-
 const isDate = (input: string): boolean => {
   return Boolean(Date.parse(input));
 };
 
 const isGender = (input: string): input is Gender => {
-  // upgrade to enum
   return enumIncludesString(Gender, input);
 };
 
-// const parseId = (input: unknown): string => {
-//   if (!input || !isString(input)) {
-//     throw new Error('Invalid or missing id!');
-//   }
-//
-//   return input;
-// };
+const isString = (input: unknown): input is string => {
+  return typeof input === 'string';
+};
 
-const parseName = (input: unknown): string => {
+export const parseId = (input: unknown): string => {
   if (!input || !isString(input)) {
-    throw new Error('Invalid or missing name!');
+    throw new Error('Invalid or missing id!');
   }
 
   return input;
 };
+
 
 const parseDoB = (input: unknown): string => {
   if (!input || !isString(input) || !isDate(input)) {
@@ -43,13 +35,14 @@ const parseDoB = (input: unknown): string => {
   return input;
 };
 
-const parseSSN = (input: unknown): string => {
-  if (!input || !isString(input)) {
-    throw new Error('Invalid or missing social security number!');
+const parseEntries = (input: unknown): Entry[] => {
+  // implement
+  if (!input || !Array.isArray(input)) {
+    throw new Error('Invalid entries property!');
   }
 
-  return input;
-};
+  return [];
+}; 
 
 const parseGender = (input: unknown): Gender => {
   if (!input || !isString(input) || !isGender(input)) {
@@ -59,9 +52,25 @@ const parseGender = (input: unknown): Gender => {
   return input;
 };
 
+const parseName = (input: unknown): string => {
+  if (!input || !isString(input)) {
+    throw new Error('Invalid or missing name!');
+  }
+
+  return input;
+};
+
 const parseOccupation = (input: unknown): string => {
   if (!input || !isString(input)) {
     throw new Error('Invalid or missing occupation!');
+  }
+
+  return input;
+};
+
+const parseSSN = (input: unknown): string => {
+  if (!input || !isString(input)) {
+    throw new Error('Invalid or missing social security number!');
   }
 
   return input;
@@ -81,14 +90,21 @@ export const parseNewPatient = (input: unknown): NewPatient => {
     'occupation' in input
   ) {
     const newPatient: NewPatient = {
-      name: parseName(input.name),
       dateOfBirth: parseDoB(input.dateOfBirth),
-      ssn: parseSSN(input.ssn),
+      entries: 'entries' in input ? parseEntries(input.entries) : [],
       gender: parseGender(input.gender),
+      name: parseName(input.name),
       occupation: parseOccupation(input.occupation),
+      ssn: parseSSN(input.ssn),
     };
     return newPatient;
   }
 
   throw new Error('Invalid input, some properties are missing!');
+};
+
+export const filterNonSensitive = (patient: Patient): NonSensitivePatient => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { ssn, entries, ...filteredData } = patient;
+  return filteredData;
 };

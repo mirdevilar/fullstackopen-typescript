@@ -2,6 +2,7 @@ import express from 'express';
 
 import patientsService from '../services/patientsService';
 import { Patient } from '../types';
+import { parseId } from '../utils/parsers';
 
 const router = express.Router();
 
@@ -19,6 +20,23 @@ router.post('/', (_req, res) => {
       errorMessage += 'Error: ' + error.message;
     }
     res.send(errorMessage);
+  }
+});
+
+router.get('/:id', (req, res) => {
+  try {
+    const id = parseId(req.params.id);
+    const match = patientsService.getById(id);
+    if (!match) {
+      res.status(400).json({ error: 'Not found' });
+    }
+    res.json(match);
+  } catch (error) {
+    let msg = 'Something went wrong... ';
+    if (error instanceof Error) {
+      msg += 'Error: ' + error.message;
+    }
+    res.send(msg);
   }
 });
 
