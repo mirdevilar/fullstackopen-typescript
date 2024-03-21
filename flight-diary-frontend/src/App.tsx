@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import DiaryEntries from './components/DiaryEntries'
+import DiaryEntriesSection from './components/DiaryEntriesSection'
 import diariesService from './services/diariesService'
 import { DiaryEntry } from './types'
 
@@ -15,7 +15,7 @@ function App() {
 
   return (
     <>
-      <DiaryEntries entries={diaryEntries} />
+      <DiaryEntriesSection entries={diaryEntries} />
     </>
   )
 }
