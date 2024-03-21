@@ -15,7 +15,7 @@ function App() {
 
   return (
     <>
-      <DiaryEntriesSection entries={diaryEntries} />
+      <DiaryEntriesSection entries={diaryEntries} setEntries={setDiaryEntries} />
     </>
   )
 }

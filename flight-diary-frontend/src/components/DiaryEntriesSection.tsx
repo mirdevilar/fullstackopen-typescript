@@ -1,72 +1,10 @@
-import { useState } from 'react'
-import { DiaryEntry, Visibility, Weather } from '../types'
+import NewDiaryEntryForm from './NewDiaryEntryForm'
+import { DiaryEntry } from '../types'
+import diariesService from '../services/diariesService'
 
-const NewEntryForm = () => {
-  const [show, setShow] = useState(false)
-
-  const [date, setDate] = useState('')
-  const [visibility, setVisibility] = useState('')
-  const [weather, setWeather] = useState('')
-  const [comment, setComment] = useState('')
-
-  return (
-    <div>
-      {show && 
-        <div>
-          <h3>Add new entry</h3>
-          <form>
-            <label>date: </label>
-            <input 
-              onChange={(e) => setDate(e.target.value)}
-              type="date"
-              value={date}
-            />
-            <br />
-
-            <label>visibility: </label>
-            {Object.keys(Visibility).map((v, i) =>
-              <div style={{display: "inline"}}>
-                <input
-                  checked={visibility === v}
-                  id={v}
-                  key={i}
-                  onChange={(e) => setVisibility(e.target.value)}
-                  type="radio"
-                  value={v}
-                />
-                <label htmlFor={v}>{v}</label>
-              </div>
-            )}
-            <br />
-
-            <label>weather: </label>
-            {Object.keys(Weather).map((v, i) =>
-              <div style={{ display: 'inline' }}>
-                <input
-                  checked={weather === v}
-                  id={v}
-                  key={i}
-                  onChange={(e) => setWeather(e.target.value)}
-                  type="radio"
-                  value={v}
-                />
-                <label htmlFor={v}>{v}</label>
-              </div>
-            )}
-            <br />
-
-            <label>comment: </label>
-            <input
-              onChange={(e) => setComment(e.target.value)}
-              value={comment}
-            />
-          </form>
-        </div>
-      }
-
-      {!show && <button onClick={() => setShow(true)}>New entry</button>}
-    </div>
-  )
+interface Props {
+  entries: DiaryEntry[];
+  setEntries: (entries: DiaryEntry[]) => void;
 }
 
 const EntryList = ({ entries }: { entries: DiaryEntry[] }) => {
@@ -85,11 +23,20 @@ const EntryList = ({ entries }: { entries: DiaryEntry[] }) => {
   )
 }
 
-const DiaryEntriesSection = ({ entries }: { entries: DiaryEntry[] }) => {
+const DiaryEntriesSection = ({ entries, setEntries }: Props) => {
+  const addEntry = (entry: Omit<DiaryEntry, 'id'>) => {
+    diariesService.create(entry).then((data) => {
+      setEntries(entries.some(e => e.id === data.id)
+        ? entries
+        : entries.concat(data)
+      )
+    })
+  }
+
   return (
     <div>
       <h2>Diary entries</h2>
-      <NewEntryForm />
+      <NewDiaryEntryForm addEntry={addEntry} />
       <EntryList entries={ entries }/>
     </div>
   )
