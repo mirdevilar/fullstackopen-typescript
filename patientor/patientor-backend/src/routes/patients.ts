@@ -28,7 +28,7 @@ router.get('/:id', (req, res) => {
     const id = parseId(req.params.id);
     const match = patientsService.getById(id);
     if (!match) {
-      res.status(400).json({ error: 'Not found' });
+      res.status(404).json({ error: 'Not found' });
     }
     res.json(match);
   } catch (error) {
