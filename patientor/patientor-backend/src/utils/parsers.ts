@@ -1,4 +1,4 @@
-import { Entry, Gender, NewPatient, NonSensitivePatient, Patient } from '../types';
+import { Entry, EntryType, Gender, NewPatient, NonSensitivePatient, Patient } from '../types';
 
 const enumIncludesString = (obj: object, str: string): boolean => {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-return
@@ -8,6 +8,10 @@ const enumIncludesString = (obj: object, str: string): boolean => {
 
 const isDate = (input: string): boolean => {
   return Boolean(Date.parse(input));
+};
+
+const isEntryType = (input: string): input is EntryType => {
+  return ["HealthCheck", "Hospital", "OccupationalHealthcare"].includes(input);
 };
 
 const isGender = (input: string): input is Gender => {
@@ -40,6 +44,16 @@ const parseEntries = (input: unknown): Entry[] => {
   if (!input || !Array.isArray(input)) {
     throw new Error('Invalid entries property!');
   }
+
+  input.forEach((e) => {
+    if (!('type' in e)) {
+      throw new Error('Entry type expected!');
+    }
+    
+    if (!isString(e.type) || !isEntryType(e.type as string)) {
+      throw new Error('Entry type invalid!');
+    }
+  });
 
   return [];
 }; 
@@ -81,7 +95,6 @@ export const parseNewPatient = (input: unknown): NewPatient => {
     throw new Error('Input missing or not an object!');
   }
 
-  // if (['name', 'dateOfBirth', 'ssn', 'gender', 'occupation'].every(key => key in input)) {
   if (
     'name' in input &&
     'dateOfBirth' in input &&

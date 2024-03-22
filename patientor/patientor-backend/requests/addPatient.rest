@@ -6,5 +6,14 @@ content-type: application/json
   "dateOfBirth": "1986-07-09",
   "ssn": "090786-122X",
   "gender": "male",
-  "occupation": "Writer"
+  "occupation": "Writer",
+  "entries": [
+    {
+      "id": "223423423",
+      "date": "yes",
+      "type": "Hospital",
+      "specialist": "mr pepper",
+      "description": "yes"
+    }
+  ]
 }
