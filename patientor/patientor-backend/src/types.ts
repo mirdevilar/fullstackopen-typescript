@@ -59,13 +59,13 @@ interface OccupationalHealthcareEntry extends BaseEntry {
 export type Entry = HealthCheckEntry | HospitalEntry | OccupationalHealthcareEntry;
 
 export interface Patient {
-  dateOfBirth: string;
   entries: Entry[];
   gender: Gender;
   id: string;
   name: string;
   occupation: string;
-  ssn: string;
+  dateOfBirth?: string;
+  ssn?: string;
 }
 
 export type NewPatient = Omit<Patient, 'id'>;

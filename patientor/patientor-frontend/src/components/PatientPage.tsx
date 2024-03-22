@@ -33,6 +33,22 @@ const PatientPage = () => {
         <li>SSN: {patient.ssn}</li>
         <li>Occupation: {patient.occupation}</li>
       </ul>
+
+      {patient.entries.length > 0 &&
+        <div>
+          <h3>Entries</h3>
+          {patient.entries.map(e =>
+            <div key={e.id}>
+              <p>{e.date} {e.description}</p>
+              <ul>
+                {e.diagnosisCodes?.map(code =>
+                  <li key={code}>{code}</li>
+                )}
+              </ul>
+            </div>
+          )}
+        </div>
+      }
     </div>
   );
 };
