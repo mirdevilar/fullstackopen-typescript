@@ -2,9 +2,13 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import patientService from '../services/patients';
-import { Patient } from "../types";
+import { Diagnosis, Patient } from "../types";
 
-const PatientPage = () => {
+interface Props {
+  diagnoses: Diagnosis[];
+}
+
+const PatientPage = ({ diagnoses }: Props) => {
   const id = useParams().id as string;
   const navigate = useNavigate();
 
@@ -42,7 +46,7 @@ const PatientPage = () => {
               <p>{e.date} {e.description}</p>
               <ul>
                 {e.diagnosisCodes?.map(code =>
-                  <li key={code}>{code}</li>
+                  <li key={code}>{code} {diagnoses && diagnoses.find(d => d.code === code)?.name}</li>
                 )}
               </ul>
             </div>
