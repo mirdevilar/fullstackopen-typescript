@@ -1,21 +1,23 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import patientService from '../services/patients';
 import { Patient } from "../types";
 
 const PatientPage = () => {
   const id = useParams().id as string;
+  const navigate = useNavigate();
 
   const [patient, setPatient] = useState<Patient | null>(null);
-  const [error, setError] = useState('');
 
   useEffect(() => {
     patientService.getById(id)
       .then((data) => {
         setPatient(data);
       })
-      .catch(() => {});
+      .catch(() => {
+        navigate('/');
+      });
   }, []);
 
   if (!patient) {
@@ -24,7 +26,6 @@ const PatientPage = () => {
 
   return (
     <div>
-      <p>{error}</p>
       <h2>{patient.name}</h2>
       <ul>
         <li>Gender: {patient.gender}</li>
