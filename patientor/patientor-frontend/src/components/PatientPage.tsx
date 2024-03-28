@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
+import EntryElement from './EntryElement';
 import patientService from '../services/patients';
 import { Diagnosis, Patient } from "../types";
 
@@ -42,14 +43,7 @@ const PatientPage = ({ diagnoses }: Props) => {
         <div>
           <h3>Entries</h3>
           {patient.entries.map(e =>
-            <div key={e.id}>
-              <p>{e.date} {e.description}</p>
-              <ul>
-                {e.diagnosisCodes?.map(code =>
-                  <li key={code}>{code} {diagnoses && diagnoses.find(d => d.code === code)?.name}</li>
-                )}
-              </ul>
-            </div>
+            <EntryElement entry={e} diagnoses={diagnoses} key={e.id} />
           )}
         </div>
       }
