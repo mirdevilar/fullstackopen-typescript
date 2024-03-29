@@ -112,10 +112,4 @@ const patients: Patient[] = [
   },
 ];
 
-// const patients: Patient[] = data.map(entry => {
-//   const patient = parseNewPatient(entry) as Patient;
-//   patient.id = entry.id;
-//   return patient;
-// });
-
 export default patients;

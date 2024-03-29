@@ -1,35 +1,7 @@
-import { Entry, EntryType, Gender, NewPatient, NonSensitivePatient, Patient } from '../types';
+import { isDate, isEntryType, isGender, isString } from "../typeGuards";
+import { Entry, Gender, NewPatient, NonSensitivePatient, Patient } from "../../types";
 
-const enumIncludesString = (obj: object, str: string): boolean => {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-return
-  return Object.values(obj).map(v => v.toString()).includes(str);
-
-};
-
-const isDate = (input: string): boolean => {
-  return Boolean(Date.parse(input));
-};
-
-const isEntryType = (input: string): input is EntryType => {
-  return ["HealthCheck", "Hospital", "OccupationalHealthcare"].includes(input);
-};
-
-const isGender = (input: string): input is Gender => {
-  return enumIncludesString(Gender, input);
-};
-
-const isString = (input: unknown): input is string => {
-  return typeof input === 'string';
-};
-
-export const parseId = (input: unknown): string => {
-  if (!input || !isString(input)) {
-    throw new Error('Invalid or missing id!');
-  }
-
-  return input;
-};
-
+// FIELD PARSERS
 
 const parseDoB = (input: unknown): string => {
   if (!input || !isString(input) || !isDate(input)) {
@@ -66,6 +38,14 @@ const parseGender = (input: unknown): Gender => {
   return input;
 };
 
+export const parseId = (input: unknown): string => {
+  if (!input || !isString(input)) {
+    throw new Error('Invalid or missing id!');
+  }
+
+  return input;
+};
+
 const parseName = (input: unknown): string => {
   if (!input || !isString(input)) {
     throw new Error('Invalid or missing name!');
@@ -89,6 +69,8 @@ const parseSSN = (input: unknown): string => {
 
   return input;
 };
+
+// PATIENT PARSER
 
 export const parseNewPatient = (input: unknown): NewPatient => {
   if (!input || typeof input !== 'object') {

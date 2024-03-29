@@ -6,7 +6,7 @@ export enum Gender {
   Other = 'other',
 }
 
-enum HealthCheckRating {
+export enum HealthCheckRating {
   "Healthy" = 0,
   "LowRisk" = 1,
   "HighRisk" = 2,
@@ -19,19 +19,19 @@ export interface Diagnosis {
   latin?: string;
 }
 
-interface Discharge {
+export interface Discharge {
   date: string;
   criteria: string;
 }
 
-interface SickLeave {
+export interface SickLeave {
   startDate: string;
   endDate: string;
 }
 
 export type EntryType = 'Hospital' | 'OccupationalHealthcare' | 'HealthCheck';
 
-interface BaseEntry {
+export interface BaseEntry {
   date: string;
   description: string;
   id: string;
@@ -69,5 +69,6 @@ export interface Patient {
 }
 
 export type NewPatient = Omit<Patient, 'id'>;
+export type NewEntry = UnionOmit<Entry, 'id'>;
 
 export type NonSensitivePatient = Omit<Patient, 'ssn' | 'entries'>;

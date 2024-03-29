@@ -1,8 +1,11 @@
-import patients from '../../data/patients';
-import { parseNewPatient } from '../utils/parsers';
-import { Patient, NonSensitivePatient } from '../types';
-import { filterNonSensitive } from '../utils/parsers';
+import initPatients from '../../data/patients';
+import { parseNewPatient } from '../utils/parsers/patient';
+import { Entry, Patient, NonSensitivePatient } from '../types';
+import { filterNonSensitive } from '../utils/parsers/patient';
 import { generateId } from '../utils/utils';
+import { parseNewEntry } from '../utils/parsers/entry';
+
+let patients = initPatients;
 
 const getAll = (): NonSensitivePatient[] => {
   return patients.map((p) => filterNonSensitive(p));
@@ -13,10 +16,25 @@ const getById = (id: string): NonSensitivePatient | undefined => {
 };
 
 const create = (patientToCreate: unknown): Patient => {
-  const patient = parseNewPatient(patientToCreate) as Patient;
-  patient.id = generateId();
+  const newPatient = parseNewPatient(patientToCreate);
+  const patient = { ...newPatient, id: generateId() } as Patient;
   patients.push(patient);
+
   return patient;
 };
 
-export default { getAll, create, getById };
+const createEntry = (entryToCreate: unknown, patientId: string): Entry => {
+  if (!patients.find(p => p.id === patientId)) {
+    throw new Error('No such patient!');
+  }
+
+  const newEntry = parseNewEntry(entryToCreate);
+  const entry = { ...newEntry, id: generateId() } as Entry;
+  patients = patients.map(p => p.id === patientId ? { ...p, entries: p.entries.concat(entry) } : p);
+  console.log(patients[3]);
+  // console.log(patients.find(p => p.id === patientId));
+
+  return entry;
+};
+
+export default { getAll, create, getById, createEntry };
