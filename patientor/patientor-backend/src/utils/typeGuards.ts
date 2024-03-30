@@ -13,8 +13,6 @@ export const isGender = (input: string): input is Gender => {
 };
 
 export const isHealthCheckRating = (input: number): input is HealthCheckRating => {
-  // console.log(Object.values(HealthCheckRating));
-  // console.log(Object.values(HealthCheckRating).includes(input));
   return Object.values(HealthCheckRating).includes(input);
 };
 

@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
+import AddEntryForm from "./AddEntryForm";
 import EntryElement from './EntryElement';
+
 import patientService from '../services/patients';
-import { Diagnosis, Patient } from "../types";
+import { Diagnosis, NewEntry, Patient } from "../types";
 
 interface Props {
   diagnoses: Diagnosis[];
@@ -25,9 +27,17 @@ const PatientPage = ({ diagnoses }: Props) => {
       });
   }, []);
 
+
   if (!patient) {
     return <h2>Patient not found!</h2>;
   }
+
+  const addEntry = async (newEntry: NewEntry) => {
+    const createdEntry = await patientService.createEntry(newEntry, id);
+    if (!patient.entries.some(e => e.id === createdEntry.id)) {
+      setPatient({ ...patient, entries: patient.entries.concat(createdEntry) });
+    }
+  };
 
   return (
     <div>
@@ -39,14 +49,13 @@ const PatientPage = ({ diagnoses }: Props) => {
         <li>Occupation: {patient.occupation}</li>
       </ul>
 
-      {patient.entries.length > 0 &&
-        <div>
-          <h3>Entries</h3>
-          {patient.entries.map(e =>
-            <EntryElement entry={e} diagnoses={diagnoses} key={e.id} />
-          )}
-        </div>
-      }
+      <div>
+        <h3>Entries</h3>
+        <AddEntryForm addEntry={addEntry} />
+        {patient.entries.map(e =>
+          <EntryElement entry={e} diagnoses={diagnoses} key={e.id} />
+        )}
+      </div>
     </div>
   );
 };
