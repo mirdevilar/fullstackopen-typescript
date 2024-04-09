@@ -1,7 +1,8 @@
-import { Alert, Button, TextField } from "@mui/material";
+import { Alert, Button, MenuItem, Select, TextField } from "@mui/material";
 import { useState } from "react";
-import { parseDate, parseDescription, parseDiagnosisCodes, parseHealthCheckRating, parseSpecialist } from "../utils/addEntryForm_parsers";
-import { NewEntry } from "../types";
+import { EntryType, HealthCheckRating, NewEntry } from "../types";
+import { parseNewEntry } from "../utils/addEntryForm_parsers";
+import { isNumber } from "../utils/typeGuards";
 
 interface Props {
   addEntry: (newEntry: NewEntry) => void,
@@ -15,7 +16,14 @@ const AddEntryForm = ({ addEntry }: Props) => {
   const [date, setDate] = useState('');
   const [specialist, setSpecialist] = useState('');
   const [diagnosisCodes, setDiagnosisCodes] = useState('');
+
+  const [type, setType] = useState<EntryType | ''>('HealthCheck');
   const [healthCheckRating, setHealthCheckRating] = useState('');
+  const [dischargeDate, setDischargeDate] = useState('');
+  const [dischargeCriteria, setDischargeCriteria] = useState('');
+  const [employerName, setEmployerName] = useState('');
+  const [sickLeaveStart, setSickLeaveStart] = useState('');
+  const [sickLeaveEnd, setSickLeaveEnd] = useState('');
 
   const showErrorMessage = (message: string) => {
     setErrorMessage(message);
@@ -27,14 +35,25 @@ const AddEntryForm = ({ addEntry }: Props) => {
   const handleSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
     try {
-      addEntry({
-        description: parseDescription(description),
-        date: parseDate(date),
-        specialist: parseSpecialist(specialist),
-        type: 'HealthCheck', // implement other types
-        diagnosisCodes: parseDiagnosisCodes(diagnosisCodes),
-        healthCheckRating: parseHealthCheckRating(healthCheckRating),
-      });
+      const newEntryToAdd = {
+        description,
+        date,
+        specialist,
+        diagnosisCodes,
+        type,
+        healthCheckRating,
+        discharge: { 
+          date: dischargeDate,
+          criteria: dischargeCriteria
+        },
+        employerName,
+        sickLeave: {
+          startDate: sickLeaveStart,
+          endDate: sickLeaveEnd,
+        }
+      };
+
+      addEntry(parseNewEntry(newEntryToAdd));
 
       setShow(false);
       
@@ -42,7 +61,13 @@ const AddEntryForm = ({ addEntry }: Props) => {
       setDate('');
       setSpecialist('');
       setDiagnosisCodes('');
+      setType('');
       setHealthCheckRating('');
+      setDischargeDate('');
+      setDischargeCriteria('');
+      setEmployerName('');
+      setSickLeaveStart('');
+      setSickLeaveEnd('');
     } catch (error) {
       let msg = 'Invalid input. ';
       if (error instanceof Error) {
@@ -79,10 +104,72 @@ const AddEntryForm = ({ addEntry }: Props) => {
             onChange={(e) => setDiagnosisCodes(e.target.value)}
           /><br />
           <TextField
-            label="Health check rating"
-            onChange={(e) => setHealthCheckRating(e.target.value)}
-            value={healthCheckRating}
-          /><br />
+            select
+            label="Type"
+            value={type}
+            onChange={e => setType(e.target.value as EntryType)}
+          >
+            <MenuItem value={"HealthCheck"}>Health check</MenuItem>
+            <MenuItem value={"Hospital"}>Hospital</MenuItem>
+            <MenuItem value={"OccupationalHealthcare"}>Occupational healthcare</MenuItem>
+          </TextField><br />
+
+          {type === 'HealthCheck' &&
+            <Select
+              label="Health check rating"
+              value={healthCheckRating}
+              onChange={(e) => setHealthCheckRating(e.target.value)}
+            >
+              {Object.entries(HealthCheckRating)
+                .filter(r => isNumber(r[1]))
+                .map(r => {
+                  console.log(r);
+                  return <MenuItem value={r[1]} key={r[1]}>{r[0]}</MenuItem>;
+              })}
+            </Select>
+          }
+          
+          {type === 'Hospital' &&
+            <div>
+              <TextField
+                label="Discharge date"
+                value={dischargeDate}
+                onChange={e => setDischargeDate(e.target.value)}
+              />
+
+              {(dischargeDate || dischargeCriteria) &&
+                <TextField
+                  label="Discharge criteria"
+                  value={dischargeCriteria}
+                  onChange={e => setDischargeCriteria(e.target.value)}
+                />
+              }
+            </div>
+          }
+
+          {type === 'OccupationalHealthcare' &&
+            <div>
+              <TextField
+                label="Employer name"
+                value={employerName}
+                onChange={e => setEmployerName(e.target.value)}
+              /><br />
+              
+              <TextField
+                label="Sick leave start date"
+                value={sickLeaveStart}
+                onChange={e => setSickLeaveStart(e.target.value)}
+              />
+
+              {(sickLeaveStart || sickLeaveEnd) &&
+                <TextField
+                  label="Sick leave end date"
+                  value={sickLeaveEnd}
+                  onChange={e => setSickLeaveEnd(e.target.value)}
+                />
+              }
+            </div>
+          }
 
           <Button variant="outlined" onClick={() => setShow(!show)}>Cancel</Button>
           <Button type="submit" variant="contained">Create</Button>
